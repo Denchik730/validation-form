@@ -3,6 +3,8 @@ const inputsContainer = form.querySelector('.form__inputs');
 
 // у формы инпут появляется из за всплытия событий 
 form.addEventListener('input', (e) => {
+
+  console.dir(e.target);
   
 
   const key = e.target.name;
@@ -15,12 +17,32 @@ form.addEventListener('input', (e) => {
 
   const errorMessage = validate(key, value, values);
 
+  // if (!errorMessage) {
+  //   clearError(key);
+  //   return;
+  // }
+
+  // setError(key, errorMessage);
+
   if (!errorMessage) {
+    e.target.onblur = () => {
+      e.target.dataset.dirty = 'true';
+    };
     clearError(key);
     return;
   }
 
-  setError(key, errorMessage);
+  // есть ошибка
+  if (e.target.dataset.dirty === 'true') {
+    setError(key, errorMessage);
+    return;
+  }
+
+  // есть ошибка, но мы еще не ушли с поля
+  e.target.onblur = () => {
+    e.target.dataset.dirty = 'true';
+    setError(key, errorMessage);
+  };
 
 });
 
