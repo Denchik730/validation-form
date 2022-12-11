@@ -1,6 +1,7 @@
 const form = document.querySelector('#form');
 const inputsContainer = form.querySelector('.form__inputs');
 
+
 // у формы инпут появляется из за всплытия событий 
 form.addEventListener('input', (e) => {
 
@@ -45,6 +46,39 @@ form.addEventListener('input', (e) => {
   };
 
 });
+
+form.addEventListener('submit', (e) => {
+  
+  const formData = new FormData(e.currentTarget);
+
+  const values = Object.fromEntries(formData);
+
+  let isFormValid = true;
+
+  formData.forEach((value, key) => {
+    const errorMessage = validate(key, value, values);
+
+    if (!errorMessage) {
+      return;
+    }
+
+    setError(key, errorMessage);
+    const inputEl = inputsContainer.querySelector(`.form__input[name=${key}]`);
+    inputEl.dataset.dirty = 'true';
+
+    isFormValid = false;
+  });
+
+  if (!isFormValid) {
+    e.preventDefault();
+    return;
+  }
+
+  // отправить запрос
+});
+
+
+
 
 const validators = {
   username: validateUsername,
